@@ -32,10 +32,10 @@ class ProdukModel extends HiveObject {
   String? gambarPath;
 
   @HiveField(9)
-  String? unitTakaranKemasan; // Unit untuk takaran kemasan
+  String? unitTakaranKemasan; 
 
   @HiveField(10)
-  List<Map<String, dynamic>>? nutrisiDetail; // Detail nutrisi dengan unit
+  List<Map<String, dynamic>>? nutrisiDetail; 
 
   ProdukModel({
     required this.nama,

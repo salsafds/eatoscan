@@ -740,45 +740,52 @@ class ActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        SizedBox(
-          width: 173,
-          height: 43,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: lihatColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+    final screenWidth = MediaQuery.of(context).size.width;
+    final buttonWidth = (screenWidth - 61) / 2; 
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0), 
+      child: Row(
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: 43,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF225840),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: onLihat,
+                child: Text(
+                  lihatLabel,
+                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                ),
               ),
             ),
-            onPressed: onLihat,
-            child: Text(
-              lihatLabel,
-              style: const TextStyle(fontSize: 14, color: Colors.white),
-            ),
           ),
-        ),
-        const SizedBox(width: 13),
-        SizedBox(
-          width: 173,
-          height: 43,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: simpanColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+          const SizedBox(width: 13),
+          Expanded(
+            child: SizedBox(
+              height: 43,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF225840),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: onSimpan,
+                child: Text(
+                  simpanLabel,
+                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                ),
               ),
             ),
-            onPressed: onSimpan,
-            child: Text(
-              simpanLabel,
-              style: const TextStyle(fontSize: 14, color: Colors.white),
-            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -39,7 +39,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       setState(() {
         _userGender = prefs.getString('gender');
         
-        // Load kondisi kesehatan pengguna dan data penyakit dari database
         for (var penyakit in PenyakitFormPage.dataPenyakit) {
           final nama = penyakit['nama'];
           final hasCondition = prefs.getBool('penyakit_$nama') ?? false;
@@ -60,7 +59,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     }
   }
 
-  // Fungsi utama untuk menganalisis risiko berdasarkan database penyakit
   List<PersonalizedWarning> _analyzePersonalizedRisks() {
     List<PersonalizedWarning> warnings = [];
     
@@ -68,10 +66,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       return warnings;
     }
     
-    // Parse nutrisi produk
     final nutrients = _parseNutrients(widget.product.nutrisi);
     
-    // Analisis setiap penyakit yang dimiliki pengguna
     for (var disease in _userActiveDiseases) {
       final diseaseWarnings = _analyzeDiseaseRisks(disease, nutrients);
       warnings.addAll(diseaseWarnings);
@@ -80,7 +76,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return warnings;
   }
 
-  // Analisis risiko berdasarkan data penyakit dari database
   List<PersonalizedWarning> _analyzeDiseaseRisks(
     Map<String, dynamic> disease, 
     Map<String, String> nutrients
@@ -90,13 +85,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final diseaseDescription = disease['deskripsi'];
     final hindariBahan = disease['hindariBahan'] as List<dynamic>;
     
-    // Cek setiap bahan yang harus dihindari
     for (var bahan in hindariBahan) {
       final bahanNama = bahan['nama'].toString().toLowerCase();
       final batasMaksimal = bahan['batas_maksimal'] as double;
       final unit = bahan['unit'];
       
-      // Cari nilai nutrisi yang sesuai dengan bahan yang dihindari
       final nutrientValue = _findNutrientValue(nutrients, bahanNama);
       
       if (nutrientValue > batasMaksimal) {
@@ -128,9 +121,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return warnings;
   }
 
-  // Mencari nilai nutrisi berdasarkan nama bahan
   double _findNutrientValue(Map<String, String> nutrients, String bahanNama) {
-    // Daftar kata kunci untuk mencocokkan bahan
     final keywords = _getKeywords(bahanNama);
     
     for (String keyword in keywords) {
@@ -144,7 +135,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return 0.0;
   }
 
-  // Mendapatkan kata kunci untuk pencarian nutrisi
   List<String> _getKeywords(String bahanNama) {
     final lowerBahan = bahanNama.toLowerCase();
     
@@ -167,7 +157,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     }
   }
 
-  // Menentukan tingkat keparahan peringatan
   WarningSeverity _determineSeverity(double currentValue, double maxLimit) {
     final ratio = currentValue / maxLimit;
     
@@ -180,7 +169,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     }
   }
 
-  // Generate pesan peringatan yang informatif
   String _generateWarningMessage(
     String diseaseName,
     String bahanNama,
@@ -205,7 +193,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
            'Konsumsi berlebihan dapat memperburuk kondisi $diseaseName Anda.';
   }
 
-  // Mendapatkan ikon yang sesuai dengan jenis penyakit
   IconData _getWarningIcon(String diseaseName) {
     final lowerName = diseaseName.toLowerCase();
     
@@ -228,7 +215,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     }
   }
 
-  // Fungsi parsing nutrisi (sama seperti sebelumnya)
   Map<String, String> _parseNutrients(String nutrisiString) {
     final Map<String, String> nutrients = {};
     
@@ -242,7 +228,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       
       bool matched = false;
       
-      // Pattern 1: "Nama (Berat g)"
       RegExpMatch? match = RegExp(r'(.+)\s*$$(.+)\s*g$$').firstMatch(trimmedPart);
       if (match != null) {
         final name = match.group(1)?.trim() ?? '';
@@ -253,7 +238,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         }
       }
       
-      // Pattern 2: "Nama (Berat)" tanpa g
       if (!matched) {
         match = RegExp(r'(.+)\s*$$(.+)$$').firstMatch(trimmedPart);
         if (match != null) {
@@ -267,7 +251,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         }
       }
       
-      // Pattern 3: "Nama: Berat g"
       if (!matched) {
         match = RegExp(r'(.+):\s*(.+)').firstMatch(trimmedPart);
         if (match != null) {
@@ -281,7 +264,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         }
       }
       
-      // Pattern 4: "Nama Berat g" (space separated)
       if (!matched) {
         final spaceParts = trimmedPart.split(' ');
         if (spaceParts.length >= 2) {
@@ -303,7 +285,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return nutrients;
   }
 
-  // Fungsi utilitas lainnya tetap sama
   String _getNutrientUnit(String nutrient) {
     final lowerNutrient = nutrient.toLowerCase();
     
@@ -375,7 +356,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       backgroundColor: Colors.grey[100],
       body: Stack(
         children: [
-          // Background image
           Container(
             height: MediaQuery.of(context).size.height * 0.4,
             decoration: BoxDecoration(
@@ -392,7 +372,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
           ),
           
-          // Back button
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -403,7 +382,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
           ),
           
-          // Content
           DraggableScrollableSheet(
             initialChildSize: 0.6,
             minChildSize: 0.6,
@@ -419,7 +397,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Drag handle
                       Center(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 12, bottom: 8),
@@ -434,7 +411,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       ),
                       
-                      // Nutri-Score
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Column(
@@ -461,7 +437,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       ),
                       
-                      // Product name and category
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                         child: Center(
@@ -490,7 +465,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       ),
                       
-                      // Personalized Warning section
                       if (personalizedWarnings.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.all(16),
@@ -519,7 +493,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           ),
                         ),
                       
-                      // Health Status Info
                       if (_userActiveDiseases.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -572,7 +545,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       
                       const SizedBox(height: 16),
                       
-                      // Nutrient cards
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Column(
@@ -631,7 +603,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       ),
                       
-                      // Recommendations
                       const Padding(
                         padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
                         child: Text(
@@ -656,13 +627,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 : recommendedProduct.preferensiNutrisi['bebas_gluten'] == true
                                   ? 'Bebas Gluten'
                                   : 'Sehat',
-                              recommendedProduct.gambarPath, // Tambahkan parameter gambar
+                              recommendedProduct.gambarPath, 
                             );
                           }).toList(),
                         ),
                       ),
                       
-                      // Nutrition preferences
                       const Padding(
                         padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
                         child: Text(
@@ -698,7 +668,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       ),
                       
-                      // Detailed nutrition info
                       Padding(
                         padding: const EdgeInsets.all(16),
                         child: Container(
@@ -721,7 +690,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               ),
                               const SizedBox(height: 12),
                               
-                              // Informasi Kemasan
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
@@ -748,7 +716,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               
                               const SizedBox(height: 12),
                               
-                              // Kandungan Nutrisi per Sajian
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
@@ -774,7 +741,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                         final color = _getNutrientColor(entry.key, value);
                                         final unit = _getNutrientUnit(entry.key);
                                         
-                                        // Cek apakah nutrisi ini bermasalah untuk kondisi kesehatan pengguna
                                         bool isProblematic = false;
                                         for (var disease in _userActiveDiseases) {
                                           final hindariBahan = disease['hindariBahan'] as List<dynamic>;
@@ -1004,78 +970,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  // Widget _buildRecommendationCard(String name, String tag,  String? imagePath) {
-  //   return Container(
-  //     width: 150,
-  //     margin: const EdgeInsets.only(right: 12),
-  //     decoration: BoxDecoration(
-  //       color: Colors.white,
-  //       borderRadius: BorderRadius.circular(8),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: Colors.grey.withOpacity(0.2),
-  //           spreadRadius: 1,
-  //           blurRadius: 4,
-  //           offset: const Offset(0, 2),
-  //         ),
-  //       ],
-  //     ),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Container(
-  //           height: 100,
-  //           decoration: BoxDecoration(
-  //             color: Colors.grey[200],
-  //             borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-  //           ),
-  //           child: const Center(
-  //             child: Icon(Icons.image, size: 40, color: Colors.grey),
-  //           ),
-  //         ),
-  //         Padding(
-  //           padding: const EdgeInsets.all(8),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Text(
-  //                 name,
-  //                 style: const TextStyle(
-  //                   fontSize: 12,
-  //                   fontWeight: FontWeight.bold,
-  //                 ),
-  //                 maxLines: 2,
-  //                 overflow: TextOverflow.ellipsis,
-  //               ),
-  //               const SizedBox(height: 4),
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                 children: [
-  //                   Container(
-  //                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-  //                     decoration: BoxDecoration(
-  //                       color: Colors.green,
-  //                       borderRadius: BorderRadius.circular(4),
-  //                     ),
-  //                     child: Text(
-  //                       tag,
-  //                       style: const TextStyle(
-  //                         color: Colors.white,
-  //                         fontSize: 10,
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   const Icon(Icons.favorite_border, size: 16),
-  //                 ],
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildRecommendationCard(String name, String tag, String? imagePath) {
   return Container(
     width: 150,
@@ -1149,10 +1043,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   );
 }
 
-// Widget helper untuk menampilkan gambar produk
 Widget _buildProductImage(String? imagePath) {
   if (imagePath != null && imagePath.isNotEmpty) {
-    // Cek apakah file gambar ada
     final file = File(imagePath);
     if (file.existsSync()) {
       return Image.file(
@@ -1167,7 +1059,6 @@ Widget _buildProductImage(String? imagePath) {
     }
   }
   
-  // Tampilkan placeholder jika tidak ada gambar
   return _buildPlaceholderImage();
 }
 
@@ -1229,7 +1120,6 @@ Widget _buildPlaceholderImage() {
   }
 }
 
-// Model untuk peringatan yang dipersonalisasi
 class PersonalizedWarning {
   final String title;
   final String message;

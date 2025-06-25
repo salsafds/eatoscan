@@ -32,35 +32,17 @@ class _EditProfilPageState extends State<EditProfilPage> {
   }
 
   void _loadUserData() async {
-    // final loginBox = await Hive.openBox('login');
-    // final userBox = Hive.box<UserModel>('users');
-    // final userId = loginBox.get('currentUserId');
-
-    // if (userId != null) {
-    //   final currentUser = userBox.get(userId);
-    //   if (currentUser != null) {
-    //     _nameController.text = currentUser.username;
-    //     _emailController.text = currentUser.email;
-    //   }
-    // }
-
     final isLoggedIn = _eatoscanBox.get('isLoggedIn', defaultValue: false);
     final loggedInUser = _eatoscanBox.get('loggedInUser');
     if (isLoggedIn && loggedInUser != null) {
-        // final Map<String, dynamic> userData =
-        //     Map<String, dynamic>.from(_eatoscanBox.get('loggedInUserData', defaultValue: {}));
-        // namaController.text = userData['nama'] ?? '';
-        // teleponController.text = userData['telepon'] ?? '';
-        // emailController.text = userData['email'] ?? '';
-      // Cari user di users box berdasarkan username
-      _currentUser = _userBox.values.firstWhere(
+        _currentUser = _userBox.values.firstWhere(
         (user) => user.username == loggedInUser,
         orElse: () => UserModel(username: '', email: '', password: ''),
       );
       setState(() {
         namaController.text = _currentUser!.username;
         emailController.text = _currentUser!.email;
-        teleponController.text = _currentUser!.telepon ?? ''; // Jika telepon tidak ada di UserModel
+        teleponController.text = _currentUser!.telepon ?? ''; 
       });
     }
   }
@@ -100,8 +82,8 @@ class _EditProfilPageState extends State<EditProfilPage> {
         );
         return;
       }
-      // Validasi kata sandi jika pengguna ingin mengganti
-      if (kataSandiLamaController.text != _currentUser!.password) {
+
+    if (kataSandiLamaController.text != _currentUser!.password) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Kata sandi lama salah.')),
         );
@@ -132,7 +114,6 @@ class _EditProfilPageState extends State<EditProfilPage> {
     }
 
     if (_currentUser != null) {
-      // Perbarui data pengguna
       _currentUser!.username = namaController.text;
       _currentUser!.email = emailController.text;
       _currentUser!.telepon = teleponController.text.isNotEmpty ? teleponController.text : null;
@@ -140,10 +121,8 @@ class _EditProfilPageState extends State<EditProfilPage> {
         _currentUser!.password = kataSandiBaruController.text;
       }
 
-      // Simpan ke users box
       await _currentUser!.save();
 
-      // Perbarui loggedInUser di eatoscanBox jika username berubah
       await _eatoscanBox.put('loggedInUser', namaController.text);
 
       ScaffoldMessenger.of(context).showSnackBar(

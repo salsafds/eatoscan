@@ -35,7 +35,6 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
   List<Map<String, dynamic>> _hindariBahan = [];
   int? _selectedIndex;
   
-  // Tambahkan variabel untuk dropdown unit
   String _selectedUnit = 'g';
   final List<String> _availableUnits = ['g', 'mg', 'kkal', 'ml', '%', 'IU'];
 
@@ -89,7 +88,7 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
       _bahanController.clear();
       _batasController.clear();
       _hindariBahan.clear();
-      _selectedUnit = 'g'; // Reset unit ke default
+      _selectedUnit = 'g'; 
     });
   }
 
@@ -101,12 +100,10 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
           _hindariBahan.add({
             'nama': _bahanController.text,
             'batas_maksimal': batas,
-            'unit': _selectedUnit, // Gunakan unit yang dipilih user
+            'unit': _selectedUnit, 
           });
           _bahanController.clear();
           _batasController.clear();
-          // Reset unit ke default atau biarkan tetap sesuai pilihan terakhir
-          // _selectedUnit = 'g'; // Uncomment jika ingin reset ke default
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -126,7 +123,6 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
     }
   }
 
-  // Method ini masih bisa digunakan untuk memberikan saran unit otomatis
   String _getSuggestedUnit(String bahan) {
     final lowerBahan = bahan.toLowerCase();
     if (lowerBahan.contains('gula') || lowerBahan.contains('sugar') ||
@@ -143,7 +139,6 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
     }
   }
 
-  // Method untuk auto-suggest unit berdasarkan nama bahan
   void _autoSuggestUnit() {
     if (_bahanController.text.isNotEmpty) {
       final suggestedUnit = _getSuggestedUnit(_bahanController.text);
@@ -358,7 +353,6 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
                             ),
                             const SizedBox(height: 24),
 
-                            // Form Fields
                             FormFieldWithLabel(
                               label: 'Nama Penyakit',
                               controller: _namaController,
@@ -379,7 +373,6 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
                               hint: 'Keterangan tambahan (opsional)',
                             ),
 
-                            // Bahan yang Dihindari Section
                             const SizedBox(height: 8),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -397,7 +390,6 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      // List bahan yang sudah ditambahkan
                                       ..._hindariBahan.asMap().entries.map((entry) {
                                         int index = entry.key;
                                         Map<String, dynamic> bahan = entry.value;
@@ -448,7 +440,6 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
                                         );
                                       }),
 
-                                      // Form tambah bahan baru dengan dropdown unit
                                       Container(
                                         padding: const EdgeInsets.all(12),
                                         decoration: BoxDecoration(
@@ -458,7 +449,6 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
                                         ),
                                         child: Column(
                                           children: [
-                                            // Input nama bahan dengan tombol auto-suggest
                                             Row(
                                               children: [
                                                 Expanded(
@@ -492,7 +482,6 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
                                             ),
                                             const SizedBox(height: 8),
                                             
-                                            // Row untuk input batas dan dropdown unit
                                             Row(
                                               children: [
                                                 Expanded(
@@ -551,7 +540,6 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
                                             ),
                                             const SizedBox(height: 8),
                                             
-                                            // Info unit yang dipilih
                                             Container(
                                               width: double.infinity,
                                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -598,7 +586,6 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
 
                             const SizedBox(height: 24),
 
-                            // Action Buttons
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -611,7 +598,6 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
 
                             const SizedBox(height: 24),
 
-                            // Data Table
                             Container(
                               height: 300,
                               decoration: BoxDecoration(
@@ -773,7 +759,6 @@ class _PenyakitFormPageState extends State<PenyakitFormPage> {
     );
   }
 
-  // Method untuk memberikan deskripsi unit
   String _getUnitDescription(String unit) {
     switch (unit) {
       case 'g':

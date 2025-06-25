@@ -14,8 +14,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  // final DBHelper dbHelper = DBHelper();
-
+  
   void _handleLogin() async {
     final username = _usernameController.text.trim();
     final password = _passwordController.text;
@@ -33,7 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final userBox = Hive.box<UserModel>('users');
       final user = userBox.values.firstWhereOrNull(
-        // (u) => u.username == username && u.password == password,
         (u) => u.username == username,
       );
 
@@ -58,7 +56,6 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        // backgroundColor: Colors.red,
       ),
     );
   }
@@ -86,7 +83,6 @@ class _LoginScreenState extends State<LoginScreen> {
   padding: const EdgeInsets.only(left: 16, top: 5, right: 16),
   child: Stack(
     children: [
-      // Teks yang rata kanan, lebarnya full layar
       SizedBox(
         width: double.infinity,
         child: Column(
@@ -112,7 +108,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
 
-      // Tombol back di pojok kiri
       IconButton(
         onPressed: () {
           Navigator.pushReplacementNamed(context, '/landingPage');
@@ -142,16 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 10),
             Image.asset('assets/images/eatoscan.png', height: 60),
             const SizedBox(height: 12),
-            // const SizedBox(height: 10),
             Image.asset('assets/images/eatoscan1.png', height: 18),
-            // const Text(
-            //   'EAToSCAN',
-            //   style: TextStyle(
-            //     fontSize: 20,
-            //     fontWeight: FontWeight.bold,
-            //     color: Color(0xFFE65100),
-            //   ),
-            // ),
             const SizedBox(height: 32),
             _buildTextField(_usernameController, 'Masukkan Nama', 'Username'),
             const SizedBox(height: 20),
@@ -205,9 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildForgotPasswordButton() {
     return TextButton(
-      onPressed: () {
-        // TODO: Handle forgotten password
-      },
+      onPressed: () {},
       child: const Text(
         'Lupa kata sandi?',
         style: TextStyle(

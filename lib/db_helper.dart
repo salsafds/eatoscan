@@ -10,13 +10,11 @@ class DBHelper {
   final Box<UserModel> _userBox = Hive.box<UserModel>('users');
   final Box<ProdukModel> _produkBox = Hive.box<ProdukModel>('produk');
 
-  // ✅ Cek login
   Future<bool> checkLogin(String username, String password) async {
     final user = _userBox.get(username);
     return user != null && user.password == password;
   }
 
-  // ✅ Tambah user (register)
   Future<void> addUser({
     required String username,
     required String email,
@@ -36,7 +34,6 @@ class DBHelper {
     await _userBox.put(email, newUser);
   }
 
-  // ✅ Tambah produk/nutrisi
   Future<void> addProduk({
     required String nama,
     required String kode,
@@ -54,17 +51,14 @@ class DBHelper {
     await _produkBox.add(newProduk);
   }
 
-  // ✅ Ambil semua data produk
   List<ProdukModel> getAllProduk() {
     return _produkBox.values.toList();
   }
 
-  // ✅ Hapus produk berdasarkan id
   Future<void> deleteProduk(int index) async {
     await _produkBox.deleteAt(index);
   }
 
-  // ✅ Update produk berdasarkan id
   Future<void> updateProduk(int index, ProdukModel updatedProduk) async {
     await _produkBox.putAt(index, updatedProduk);
   }

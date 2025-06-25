@@ -12,7 +12,6 @@ class DashboardAdmin extends StatelessWidget {
         children: [
           Column(
             children: [
-              // Header Oranye
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.only(
@@ -57,7 +56,6 @@ class DashboardAdmin extends StatelessWidget {
             ],
           ),
 
-          // Bagian Putih dengan rounded top
           Positioned(
             top: 120,
             left: 0,
@@ -74,7 +72,6 @@ class DashboardAdmin extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 32, 20, 0),
               child: Column(
                 children: [
-                  // Tombol menu
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -102,7 +99,6 @@ class DashboardAdmin extends StatelessWidget {
         ],
       ),
 
-      // 🔻 Bottom Navigation Bar untuk Tombol Keluar
       bottomNavigationBar: Container(
         color: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -191,11 +187,11 @@ class DashboardAdmin extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context); // Tutup dialog
+                        Navigator.pop(context); 
                         Navigator.pushReplacementNamed(
                           context,
                           '/loginAdmin',
-                        ); // Arahkan ke halaman login
+                        ); 
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
@@ -217,7 +213,7 @@ class DashboardAdmin extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context); // Tutup dialog
+                        Navigator.pop(context); 
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black54,

@@ -138,7 +138,6 @@ class _LihatProdukPageState extends State<LihatProdukPage> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Action Buttons
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -193,12 +192,11 @@ class _LihatProdukPageState extends State<LihatProdukPage> {
 
                     const SizedBox(height: 24),
 
-                    // Data Table (Similar to Disease CRUD style)
                     Expanded(
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: SizedBox(
-                          width: 800, // Set minimum width untuk scroll
+                          width: 800, 
                           child: Container(
                             height: 300,
                             decoration: BoxDecoration(
@@ -375,7 +373,6 @@ class _LihatProdukPageState extends State<LihatProdukPage> {
                                                                 );
                                                               }).toList()
                                                             : [
-                                                                // Fallback jika nutrisiDetail kosong, parse dari string nutrisi lama
                                                                 ...produk.nutrisi.split(', ').map<Widget>((nutrisiString) {
                                                                   return Text(
                                                                     nutrisiString,

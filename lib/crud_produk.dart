@@ -34,14 +34,14 @@ class _ProductFormPageState extends State<ProductFormPage> {
   final TextEditingController _takaranKemasanController = TextEditingController();
   final TextEditingController _sajianPerKemasanController = TextEditingController();
   
-  final List<TextEditingController> _nutrisiNamaControllers = [TextEditingController()];
-  final List<TextEditingController> _nutrisiBeratControllers = [TextEditingController()];
-  final List<String> _nutrisiUnits = ['g']; // Unit untuk setiap nutrisi
+  final List<TextEditingController> _nutrisiNamaControllers = [];
+  final List<TextEditingController> _nutrisiBeratControllers = [];
+  final List<String> _nutrisiUnits = [];
   
   final List<TextEditingController> _risikoControllers = [TextEditingController()];
   
   String? _selectedKategori;
-  String _unitTakaranKemasan = 'g'; // Unit untuk takaran kemasan
+  String _unitTakaranKemasan = 'g';
   final List<String> _availableUnits = ['g', 'mg', 'kkal', 'ml', '%', 'IU'];
   
   Map<String, bool> _preferensiNutrisi = {
@@ -53,7 +53,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
   XFile? _gambarProduk;
   String? _gambarPath;
 
-  // Tambahkan variabel untuk form input sementara
   final TextEditingController _currentNutrisiNamaController = TextEditingController();
   final TextEditingController _currentNutrisiBeratController = TextEditingController();
   String _currentSelectedUnit = 'g';
@@ -96,13 +95,13 @@ class _ProductFormPageState extends State<ProductFormPage> {
     _sajianPerKemasanController.clear();
     
     for (var controller in _nutrisiNamaControllers) {
-      controller.clear();
+      controller.dispose();
     }
     for (var controller in _nutrisiBeratControllers) {
-      controller.clear();
+      controller.dispose();
     }
     for (var controller in _risikoControllers) {
-      controller.clear();
+      controller.dispose();
     }
     
     setState(() {
@@ -122,9 +121,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
       _nutrisiUnits.clear();
       _risikoControllers.clear();
       
-      _nutrisiNamaControllers.add(TextEditingController());
-      _nutrisiBeratControllers.add(TextEditingController());
-      _nutrisiUnits.add('g');
       _risikoControllers.add(TextEditingController());
 
       _currentNutrisiNamaController.clear();
@@ -165,6 +161,17 @@ class _ProductFormPageState extends State<ProductFormPage> {
       return;
     }
 
+    if (_nutrisiNamaControllers.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Gagal: Minimal harus menambahkan satu data nutrisi.'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
     final nutrisiList = <String>[];
     final nutrisiDetailList = <Map<String, dynamic>>[];
     
@@ -175,10 +182,10 @@ class _ProductFormPageState extends State<ProductFormPage> {
       
       if (nama.isEmpty || berat.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Gagal: Nama dan berat nutrisi harus diisi.'),
+          SnackBar(
+            content: Text('Gagal: Data nutrisi "${nama.isEmpty ? 'tanpa nama' : nama}" tidak lengkap.'),
             backgroundColor: Colors.red,
-            duration: Duration(seconds: 3),
+            duration: const Duration(seconds: 3),
           ),
         );
         return;
@@ -262,7 +269,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
         SnackBar(
           content: Text('Gagal: Terjadi kesalahan saat menyimpan produk. ($e)'),
           backgroundColor: Colors.red,
-          duration: Duration(seconds: 3),
+          duration: const Duration(seconds: 3),
         ),
       );
     }
@@ -356,7 +363,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
                               controller: _kodeController,
                             ),
                             
-                            // Takaran Kemasan dengan Unit
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -437,8 +443,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
                               keyboardType: TextInputType.number,
                             ),
 
-                            // Ganti bagian NutritionInputList dengan:
-                            // Kandungan Nutrisi Section (menggunakan pattern SizedBox)
                             const SizedBox(height: 8),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -456,9 +460,27 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      // List nutrisi yang sudah ditambahkan
+                                      if (_nutrisiNamaControllers.isEmpty)
+                                        Container(
+                                          padding: const EdgeInsets.all(16),
+                                          margin: const EdgeInsets.only(bottom: 8),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(color: Colors.orange[200]!),
+                                            borderRadius: BorderRadius.circular(15),
+                                            color: Colors.orange[50],
+                                          ),
+                                          child: const Text(
+                                            'Belum ada data nutrisi. Silakan tambahkan minimal satu nutrisi.',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.orange,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+
                                       ...List.generate(_nutrisiNamaControllers.length, (index) {
-                                        if (_nutrisiNamaControllers[index].text.isEmpty) return const SizedBox.shrink();
                                         return Container(
                                           margin: const EdgeInsets.only(bottom: 8),
                                           child: Row(
@@ -501,11 +523,11 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                                 icon: const Icon(Icons.remove_circle, color: Colors.red),
                                                 onPressed: () {
                                                   setState(() {
-                                                    if (_nutrisiNamaControllers.length > 1) {
-                                                      _nutrisiNamaControllers.removeAt(index);
-                                                      _nutrisiBeratControllers.removeAt(index);
-                                                      _nutrisiUnits.removeAt(index);
-                                                    }
+                                                    _nutrisiNamaControllers[index].dispose();
+                                                    _nutrisiBeratControllers[index].dispose();
+                                                    _nutrisiNamaControllers.removeAt(index);
+                                                    _nutrisiBeratControllers.removeAt(index);
+                                                    _nutrisiUnits.removeAt(index);
                                                   });
                                                 },
                                               ),
@@ -514,7 +536,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                         );
                                       }),
 
-                                      // Form tambah nutrisi baru
                                       Container(
                                         padding: const EdgeInsets.all(12),
                                         decoration: BoxDecoration(
@@ -524,7 +545,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                         ),
                                         child: Column(
                                           children: [
-                                            // Input nama nutrisi dengan tombol auto-suggest
+                                            
                                             Row(
                                               children: [
                                                 Expanded(
@@ -563,14 +584,13 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                             ),
                                             const SizedBox(height: 8),
                                             
-                                            // Row untuk input jumlah dan dropdown unit
                                             Row(
                                               children: [
                                                 Expanded(
                                                   flex: 2,
                                                   child: TextField(
                                                     controller: _currentNutrisiBeratController,
-                                                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
                                                     style: const TextStyle(fontSize: 12),
                                                     decoration: InputDecoration(
                                                       hintText: 'Jumlah',
@@ -626,17 +646,40 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                               width: double.infinity,
                                               child: ElevatedButton.icon(
                                                 onPressed: () {
-                                                  if (_currentNutrisiNamaController.text.isNotEmpty && 
-                                                      _currentNutrisiBeratController.text.isNotEmpty) {
-                                                    setState(() {
-                                                      _nutrisiNamaControllers.add(TextEditingController(text: _currentNutrisiNamaController.text));
-                                                      _nutrisiBeratControllers.add(TextEditingController(text: _currentNutrisiBeratController.text));
-                                                      _nutrisiUnits.add(_currentSelectedUnit);
-                                                      _currentNutrisiNamaController.clear();
-                                                      _currentNutrisiBeratController.clear();
-                                                      _currentSelectedUnit = 'g';
-                                                    });
+                                                  if (_currentNutrisiNamaController.text.trim().isEmpty) {
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Nama nutrisi harus diisi'),
+                                                        backgroundColor: Colors.orange,
+                                                        duration: Duration(seconds: 2),
+                                                      ),
+                                                    );
+                                                    return;
                                                   }
+                                                  
+                                                  if (_currentNutrisiBeratController.text.trim().isEmpty) {
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Jumlah nutrisi harus diisi'),
+                                                        backgroundColor: Colors.orange,
+                                                        duration: Duration(seconds: 2),
+                                                      ),
+                                                    );
+                                                    return;
+                                                  }
+
+                                                  setState(() {
+                                                    _nutrisiNamaControllers.add(
+                                                      TextEditingController(text: _currentNutrisiNamaController.text.trim())
+                                                    );
+                                                    _nutrisiBeratControllers.add(
+                                                      TextEditingController(text: _currentNutrisiBeratController.text.trim())
+                                                    );
+                                                    _nutrisiUnits.add(_currentSelectedUnit);
+                                                    _currentNutrisiNamaController.clear();
+                                                    _currentNutrisiBeratController.clear();
+                                                    _currentSelectedUnit = 'g';
+                                                  });
                                                 },
                                                 icon: const Icon(Icons.add, size: 16),
                                                 label: const Text(
@@ -728,7 +771,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
   }
 }
 
-// Keep other existing classes (RiskInputList, CategoryDropdown, ActionButtons, FormFieldWithLabel) unchanged
 class FormFieldWithLabel extends StatelessWidget {
   final String label;
   final TextEditingController controller;
@@ -798,6 +840,7 @@ class _RiskInputListState extends State<RiskInputList> {
 
   void _removeField(int index) {
     setState(() {
+      widget.controllerList[index].dispose();
       widget.controllerList.removeAt(index);
     });
   }
@@ -810,7 +853,7 @@ class _RiskInputListState extends State<RiskInputList> {
           controller: widget.controllerList[index],
           isLast: index == widget.controllerList.length - 1,
           onAdd: _addField,
-          onRemove: () => _removeField(index),
+          onRemove: widget.controllerList.length > 1 ? () => _removeField(index) : null,
           showLabel: index == 0,
         );
       }),
@@ -952,45 +995,52 @@ class ActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        SizedBox(
-          width: 173,
-          height: 43,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF225840),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+    final screenWidth = MediaQuery.of(context).size.width;
+    final buttonWidth = (screenWidth - 61) / 2; 
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0), 
+      child: Row(
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: 43,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF225840),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: onLihat,
+                child: const Text(
+                  'Lihat Data',
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ),
               ),
             ),
-            onPressed: onLihat,
-            child: const Text(
-              'Lihat Data',
-              style: TextStyle(fontSize: 14, color: Colors.white),
-            ),
           ),
-        ),
-        const SizedBox(width: 13),
-        SizedBox(
-          width: 173,
-          height: 43,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF225840),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+          const SizedBox(width: 13),
+          Expanded(
+            child: SizedBox(
+              height: 43,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF225840),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: onSimpan,
+                child: const Text(
+                  'Simpan',
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ),
               ),
             ),
-            onPressed: onSimpan,
-            child: const Text(
-              'Simpan',
-              style: TextStyle(fontSize: 14, color: Colors.white),
-            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

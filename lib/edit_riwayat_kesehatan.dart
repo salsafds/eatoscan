@@ -24,7 +24,6 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
   bool _hasChanges = false;
   bool _isLoading = true;
 
-  // Controllers untuk input
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
@@ -65,7 +64,6 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
         _savedWeight = _weight;
         _savedHeight = _height;
         
-        // Set controller values
         if (_age != null) _ageController.text = _age.toString();
         if (_weight != null) _weightController.text = _weight.toString();
         if (_height != null) _heightController.text = _height.toString();
@@ -95,32 +93,26 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
     try {
       final prefs = await SharedPreferences.getInstance();
       
-      // Simpan data dasar
       await prefs.setString('gender', _gender ?? '');
       if (_age != null) await prefs.setInt('age', _age!);
       if (_weight != null) await prefs.setDouble('weight', _weight!);
       if (_height != null) await prefs.setDouble('height', _height!);
       
-      // Simpan timestamp untuk tracking
       await prefs.setString('health_data_updated', DateTime.now().toIso8601String());
       
-      // Simpan kondisi penyakit
       for (var penyakit in PenyakitFormPage.dataPenyakit) {
         final nama = penyakit['nama'];
         await prefs.setBool('penyakit_$nama', _penyakitStatus[nama] ?? false);
       }
       
-      // Hitung dan simpan BMI jika data lengkap
       if (_weight != null && _height != null && _height! > 0) {
         final bmi = _weight! / ((_height! / 100) * (_height! / 100));
         await prefs.setDouble('bmi', bmi);
         
-        // Simpan kategori BMI
         String bmiCategory = _getBMICategory(bmi);
         await prefs.setString('bmi_category', bmiCategory);
       }
       
-      // Simpan profil risiko
       await _saveRiskProfile();
       
       setState(() {
@@ -146,7 +138,6 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
   Future<void> _saveRiskProfile() async {
     final prefs = await SharedPreferences.getInstance();
     
-    // Buat profil risiko berdasarkan kondisi kesehatan
     List<String> riskFactors = [];
     List<String> nutritionConcerns = [];
     
@@ -189,11 +180,9 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
       }
     });
     
-    // Simpan profil risiko
     await prefs.setStringList('risk_factors', riskFactors);
     await prefs.setStringList('nutrition_concerns', nutritionConcerns);
     
-    // Hitung skor risiko keseluruhan
     int riskScore = _calculateOverallRiskScore();
     await prefs.setInt('overall_risk_score', riskScore);
   }
@@ -201,23 +190,30 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
   int _calculateOverallRiskScore() {
     int score = 0;
     
-    // Skor berdasarkan jumlah kondisi kesehatan
     int activeConditions = _penyakitStatus.values.where((v) => v).length;
     score += activeConditions * 10;
     
-    // Skor berdasarkan BMI jika tersedia
     if (_weight != null && _height != null && _height! > 0) {
       final bmi = _weight! / ((_height! / 100) * (_height! / 100));
-      if (bmi >= 30) score += 20; // Obesitas
-      else if (bmi >= 25) score += 10; // Overweight
-      else if (bmi < 18.5) score += 15; // Underweight
+      if (bmi >= 30) {
+        score += 20; // Obesitas
+      } else if (bmi >= 25) {
+        score += 10; // Overweight
+      }
+      else if (bmi < 18.5) {
+        score += 15; // Underweight
+      }
     }
     
-    // Skor berdasarkan usia
     if (_age != null) {
-      if (_age! >= 60) score += 15;
-      else if (_age! >= 45) score += 10;
-      else if (_age! >= 30) score += 5;
+      if (_age! >= 60) {
+        score += 15;
+      } else if (_age! >= 45) {
+        score += 10;
+      }
+      else if (_age! >= 30) {
+        score += 5;
+      }
     }
     
     return score;
@@ -332,7 +328,6 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
           ),
           const SizedBox(height: 8),
           
-          // BMI Info
           if (_weight != null && _height != null && _height! > 0) ...[
             Row(
               children: [
@@ -347,7 +342,6 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
             const SizedBox(height: 4),
           ],
           
-          // Active Conditions
           if (activeConditions.isNotEmpty) ...[
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -392,7 +386,6 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -418,7 +411,6 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
               ),
             ),
 
-            // Body
             Expanded(
               child: Container(
                 decoration: const BoxDecoration(
@@ -451,10 +443,8 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
                       ),
                       const SizedBox(height: 20),
 
-                      // Health Summary
                       _buildHealthSummary(),
 
-                      // Data Dasar
                       Card(
                         elevation: 2,
                         child: Padding(
@@ -471,7 +461,6 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
                               ),
                               const SizedBox(height: 12),
                               
-                              // Jenis Kelamin
                               const Text("Jenis Kelamin"),
                               Row(
                                 children: [
@@ -504,7 +493,6 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
                                 ],
                               ),
                               
-                              // Usia
                               const SizedBox(height: 8),
                               TextField(
                                 controller: _ageController,
@@ -522,7 +510,6 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
                               
                               const SizedBox(height: 12),
                               
-                              // Berat dan Tinggi Badan
                               Row(
                                 children: [
                                   Expanded(
@@ -565,7 +552,6 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
 
                       const SizedBox(height: 16),
 
-                      // Riwayat Penyakit
                       Card(
                         elevation: 2,
                         child: Padding(
@@ -631,7 +617,6 @@ class _EditRiwayatKesehatanPageState extends State<EditRiwayatKesehatanPage> {
 
                       const SizedBox(height: 24),
 
-                      // Tombol Simpan
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(

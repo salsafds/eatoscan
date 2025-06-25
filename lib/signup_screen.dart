@@ -45,7 +45,6 @@ class _SignupScreenState extends State<SignupScreen> {
     try {
       final userBox = Hive.box<UserModel>('users');
 
-      // Cek apakah username atau email sudah terdaftar
       final isExist = userBox.values.any((u) => u.username == username || u.email == email);
       if (isExist) {
         _showMessage('Username atau email sudah digunakan!');
@@ -54,16 +53,12 @@ class _SignupScreenState extends State<SignupScreen> {
 
       final hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-      // Simpan ke Hive
       final newUser = UserModel(
         username: username,
         email: email,
-        password: hashedPassword, // Simpan hash
+        password: hashedPassword, 
       );
       await userBox.add(newUser);
-      // final newUser = UserModel(username: username, email: email, password: password);
-      // await userBox.add(newUser);
-
       _showMessage('Akun berhasil dibuat!');
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/login');
@@ -147,17 +142,7 @@ class _SignupScreenState extends State<SignupScreen> {
             const SizedBox(height: 10),
             Image.asset('assets/images/eatoscan.png', height: 60),
             const SizedBox(height: 12),
-            // const SizedBox(height: 10),
             Image.asset('assets/images/eatoscan1.png', height: 18),
-            // const SizedBox(height: 10),
-            // const Text(
-            //   'EAToSCAN',
-            //   style: TextStyle(
-            //     fontSize: 20,
-            //     fontWeight: FontWeight.bold,
-            //     color: Color(0xFFE65100),
-            //   ),
-            // ),
             const SizedBox(height: 32),
             _buildTextField(_usernameController, 'Masukkan nama', 'Nama'),
             const SizedBox(height: 32),

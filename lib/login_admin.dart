@@ -35,8 +35,6 @@ class _LoginAdminState extends State<LoginAdmin> {
       return;
     }
 
-    // TODO: Add login logic
-    // String password = _passwordController.text;
     Navigator.pushReplacementNamed(context, '/dashboard');
   }
 
@@ -44,7 +42,6 @@ class _LoginAdminState extends State<LoginAdmin> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        // backgroundColor: Colors.red,
       ),
     );
   }
@@ -67,12 +64,11 @@ class _LoginAdminState extends State<LoginAdmin> {
     );
   }
 
-  // Method to build the welcome text
   Widget _buildWelcomeText() {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 24), // Beri jarak 16dp dari sisi kiri
+          padding: EdgeInsets.only(left: 24), 
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -85,7 +81,7 @@ class _LoginAdminState extends State<LoginAdmin> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 24), // Beri jarak 16dp dari sisi kiri
+          padding: EdgeInsets.only(left: 24), 
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -102,7 +98,6 @@ class _LoginAdminState extends State<LoginAdmin> {
     );
   }
 
-  // Method to build the form for logging in
   Widget _buildLoginForm() {
     return Container(
       width: double.infinity,
@@ -120,16 +115,7 @@ class _LoginAdminState extends State<LoginAdmin> {
             const SizedBox(height: 10),
             Image.asset('assets/images/eatoscan.png', height: 60),
             const SizedBox(height: 12),
-            // const SizedBox(height: 10),
             Image.asset('assets/images/eatoscan1.png', height: 18),
-            // const Text(
-            //   'EAToSCAN',
-            //   style: TextStyle(
-            //     fontSize: 20,
-            //     fontWeight: FontWeight.bold,
-            //     color: Color(0xFFE65100),
-            //   ),
-            // ),
             const SizedBox(height: 32),
             _buildTextField(_emailController, 'abcd@gmail.com', 'Email'),
             const SizedBox(height: 20),
@@ -137,14 +123,12 @@ class _LoginAdminState extends State<LoginAdmin> {
             const SizedBox(height: 24),
             _buildLoginButton(),
             const SizedBox(height: 12),
-            // _buildForgotPasswordButton(),
           ],
         ),
       ),
     );
   }
 
-  // Method to build a single text field
   Widget _buildTextField(TextEditingController controller, String hintText, String labelText, {bool obscureText = false}) {
     return TextField(
       controller: controller,
@@ -159,7 +143,6 @@ class _LoginAdminState extends State<LoginAdmin> {
     );
   }
 
-  // Method to build the login button
   Widget _buildLoginButton() {
     return SizedBox(
       width: double.infinity,
@@ -183,31 +166,14 @@ class _LoginAdminState extends State<LoginAdmin> {
     );
   }
 
-  // Method to build the 'forgot password' button
-  // Widget _buildForgotPasswordButton() {
-  //   return TextButton(
-  //     onPressed: () {
-  //       // TODO: Handle forgotten password
-  //     },
-  //     child: const Text(
-  //       'Lupa kata sandi?',
-  //       style: TextStyle(
-  //         fontSize: 14,
-  //         color: Colors.blueAccent,
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Method to build the bottom navigation bar
   Widget _buildBottomNavigationBar(BuildContext context) {
   return Container(
-    color: Colors.white, // Ensure this is white
+    color: Colors.white,
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
-          width: double.infinity, // Makes the button full width
+          width: double.infinity, 
           child: TextButton(
             onPressed: () {
               Navigator.pushReplacementNamed(context, '/login');

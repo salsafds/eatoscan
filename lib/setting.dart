@@ -36,7 +36,6 @@ class _SettingPageState extends State<SettingPage> {
       final prefs = await SharedPreferences.getInstance();
       final box = Hive.box('eatoscanBox');
       
-      // Cek status login
       _isLoggedIn = box.get('isLoggedIn', defaultValue: false);
       final currentUser = box.get('loggedInUser');
       
@@ -44,11 +43,9 @@ class _SettingPageState extends State<SettingPage> {
       print('Current user: $currentUser');
       
       if (_isLoggedIn && currentUser != null) {
-        // Ambil data user dari berbagai sumber
         String? userName;
         String? userEmail;
         
-        // Coba ambil dari current_user_data (data lengkap)
         final currentUserData = box.get('current_user_data');
         if (currentUserData != null) {
           userName = currentUserData['name'] ?? currentUserData['username'];
@@ -56,7 +53,6 @@ class _SettingPageState extends State<SettingPage> {
           print('Data dari current_user_data: $currentUserData');
         }
         
-        // Fallback: ambil dari key terpisah
         if (userName == null || userEmail == null) {
           userName = box.get('user_name_$currentUser') ?? 
                    prefs.getString('current_name');
@@ -65,7 +61,6 @@ class _SettingPageState extends State<SettingPage> {
           print('Data dari key terpisah: name=$userName, email=$userEmail');
         }
         
-        // Fallback terakhir: ambil langsung dari user box
         if (userName == null || userEmail == null) {
           try {
             final userBox = Hive.box('users');
@@ -85,7 +80,6 @@ class _SettingPageState extends State<SettingPage> {
           _userEmail = userEmail ?? 'No email available';
         });
         
-        // Load profile image
         final imagePath = prefs.getString('profile_picture_$currentUser') ?? 
                          prefs.getString('profile_picture');
         
@@ -96,7 +90,6 @@ class _SettingPageState extends State<SettingPage> {
         }
         
       } else {
-        // User tidak login
         setState(() {
           _userName = 'Guest';
           _userEmail = 'Silakan login untuk melihat profil';
@@ -127,7 +120,7 @@ class _SettingPageState extends State<SettingPage> {
       context,
       MaterialPageRoute(builder: (context) => EditProfilPage()),
     );
-    _loadProfileData(); // refresh data
+    _loadProfileData(); 
   }
 
   void _showMessage(String message) {
@@ -176,13 +169,11 @@ class _SettingPageState extends State<SettingPage> {
                     onPressed: () async {
                       Navigator.of(context).pop();
                       
-                      // Clear login data
                       final box = Hive.box('eatoscanBox');
                       await box.delete('loggedInUser');
                       await box.delete('current_user_data');
                       await box.put('isLoggedIn', false);
                       
-                      // Clear SharedPreferences session data
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       await prefs.remove('current_username');
                       await prefs.remove('current_name');
@@ -283,7 +274,6 @@ class _SettingPageState extends State<SettingPage> {
                                   _userEmail,
                                   style: const TextStyle(color: Colors.black54),
                                 ),
-                                // Status indicator
                                 Container(
                                   margin: const EdgeInsets.only(top: 8),
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),

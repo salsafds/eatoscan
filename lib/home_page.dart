@@ -28,7 +28,6 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: Row(
@@ -68,7 +67,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            // Kamera Placeholder
             Container(
               margin: const EdgeInsets.symmetric(vertical: 12),
               width: 220,
@@ -99,7 +97,6 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 12),
 
-            // List Produk dari Hive
             Expanded(
               child: ValueListenableBuilder(
                 valueListenable: _produkBox.listenable(),
@@ -136,7 +133,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                         child: Row(
                           children: [
-                            // Gambar produk
                             produk.gambarPath != null &&
                                     File(produk.gambarPath!).existsSync()
                                 ? Image.file(

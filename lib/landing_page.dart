@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:typed_data'; // Import untuk Uint8List
+import 'dart:typed_data'; 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -136,7 +136,7 @@ class _LandingPageState extends State<LandingPage> {
           controller: MobileScannerController(
             detectionSpeed: DetectionSpeed.normal,
             facing: CameraFacing.back,
-            returnImage: true, // Pastikan pengambilan gambar diaktifkan
+            returnImage: true, 
           ),
           onDetect: (BarcodeCapture capture) async {
             if (_isScanning) return;
@@ -154,7 +154,6 @@ class _LandingPageState extends State<LandingPage> {
 
               debugPrint('Barcode ditemukan: $code');
 
-              // Cari produk yang cocok di Hive
               final matchedProduct = _produkBox.values.firstWhere(
                 (produk) => produk.kode == code,
                 orElse:
@@ -177,7 +176,6 @@ class _LandingPageState extends State<LandingPage> {
               );
 
               if (matchedProduct.nama.isEmpty) {
-                // Produk tidak ditemukan, tampilkan pop-up
                 if (!mounted) {
                   setState(() => _isScanning = false);
                   return;
@@ -222,9 +220,8 @@ class _LandingPageState extends State<LandingPage> {
                 return;
               }
 
-              // Produk ditemukan, simpan gambar jika tersedia
               String imagePath =
-                  'assets/images/eatoscan.png'; // Default fallback
+                  'assets/images/eatoscan.png'; 
               if (imageBytes != null && imageBytes.isNotEmpty) {
                 try {
                   final tempDir = await getTemporaryDirectory();
@@ -247,7 +244,6 @@ class _LandingPageState extends State<LandingPage> {
                 return;
               }
 
-              // Navigasi ke ProductDetailScreen
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -264,7 +260,7 @@ class _LandingPageState extends State<LandingPage> {
                 }
               });
 
-              break; // Hentikan loop setelah menemukan barcode pertama
+              break; 
             }
           },
         ),
